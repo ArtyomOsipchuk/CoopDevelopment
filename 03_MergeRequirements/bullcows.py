@@ -49,8 +49,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if args.dictionary.startswith('https://'):
         with urllib.request.urlopen(args.dictionary) as response:
-            words =  response.read().decode('utf-8').splitlines()
+            words = response.read().decode('utf-8').splitlines()
     else:
         with open(args.dictionary, "r") as f:
             words = f.read().split('\n')
+    words = [i for i in words if len(i) == args.length]
     gameplay(ask, inform, words)
