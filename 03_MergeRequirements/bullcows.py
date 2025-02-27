@@ -1,4 +1,6 @@
 import random
+import urllib.request
+import argparse
 
 def bullscows(answer: str, jigsaw: str) -> (int, int):
     b, c = 0, 0
@@ -38,4 +40,17 @@ def gameplay(ask: callable, inform: callable, words: list[str]) -> int:
     return tries
 
 if __name__ == "__main__":
-    gameplay(ask, inform, ["йожик", "котик", "собак", "уттка"])
+    parser = argparse.ArgumentParser(
+                    prog='bullscows',
+                    description='Bulls-Cows game',
+                    epilog='Cool game for cool students.')
+    parser.add_argument("dictionary", help="это имя файла или URL со словарём слов для игры")
+    parser.add_argument("length", nargs="?", default=5, type=int, help="необязательный параметр, указывающий длину используемых слов (по умолчанию 5)")
+    args = parser.parse_args()
+    if args.dictionary.startswith('https://'):
+        with urllib.request.urlopen(args.dictionary) as response:
+            words =  response.read().decode('utf-8').splitlines()
+    else:
+        with open(args.dictionary, "r") as f:
+            words = f.read().split('\n')
+    gameplay(ask, inform, words)
