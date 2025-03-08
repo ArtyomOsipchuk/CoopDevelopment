@@ -47,7 +47,7 @@ class Twocows(cmd.Cmd):
         print(*cowsay.list_cows())
     
     def do_make_bubble(self, args):
-        'Text in speech bubble instead of speech cloud'
+        'Return speech bubble. Usage: make_bubble <text>'
         args = shlex.split(args)
         if not args:
             print("Usage: make_bubble <text>")
@@ -59,7 +59,7 @@ class Twocows(cmd.Cmd):
         shargs = shlex.split(args)
         try:
             if 'reply' not in shargs:
-                raise SystemExit('Usage cowsay [-h] [-e E] [-f F] [-n] [-T T] [-W W] [-b] [-d] [-g] [-p] [-s] [-t] [-w] [-y] message1 reply [-h] [-e E] [-f F] [-n] [-T T] [-W W] [-b] [-d] [-g] [-p] [-s] [-t] [-w] [-y] message2')
+                raise SystemExit('Usage: cowthink [params for cow1, check -h] message1 reply [params for cow2] message2')
             args = self.parser.parse_args(args=shargs[:shargs.index('reply')]) 
             pr = ""
             if args.b:
@@ -123,7 +123,7 @@ class Twocows(cmd.Cmd):
         shargs = shlex.split(args)
         try:
             if 'reply' not in shargs:
-                raise SystemExit('Usage cowsay [-h] [-e E] [-f F] [-n] [-T T] [-W W] [-b] [-d] [-g] [-p] [-s] [-t] [-w] [-y] message1 reply [-h] [-e E] [-f F] [-n] [-T T] [-W W] [-b] [-d] [-g] [-p] [-s] [-t] [-w] [-y] message2')
+                raise SystemExit('Usage: cowthink [params for cow1, check -h] message1 reply [params for cow2] message2')
             args = self.parser.parse_args(args=shargs[:shargs.index('reply')]) 
             pr = ""
             if args.b:
@@ -181,6 +181,16 @@ class Twocows(cmd.Cmd):
             print(e)
         except Exception as e:
             print(e)
+    
+    def complete_cowsay(self, text, line, begidx, endidx):
+        words = (line[:endidx] + ".").split()
+        DICT = []
+        if words[-2] == '-f':
+            DICT = cowsay.list_cows()
+        return [c for c in DICT if c.startswith(text)]
+
+    def complete_cowthink(self, text, line, begidx, endidx):
+        return self.complete_cowsay(text, line, begidx, endidx)
 
 if __name__ == '__main__':
     Twocows().cmdloop()
