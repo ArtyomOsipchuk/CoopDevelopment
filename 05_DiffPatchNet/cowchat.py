@@ -82,10 +82,10 @@ async def chat(reader, writer):
                     if len(message) != 3:
                         writer.write((cowsay.cowsay(f"Usage: say <receiver_cow_name> <message>", cowfile=admin) + '\n').encode())
                         continue
+                    _, rcv, *msg = message
                     if rcv == me:
                         writer.write((cowsay.cowsay(f"Не стоит разговаривать с самим собой", cowfile=admin) + '\n').encode())
                         continue
-                    _, rcv, *msg = message
                     if rcv in clients:
                         await clients[rcv].put(twocows(cowsay.cowsay(f"Приватное сообщение для меня", cow=rcv),
                                               cowsay.cowsay(''.join(msg), cow=me) + '\n'))
